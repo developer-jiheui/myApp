@@ -5,7 +5,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -74,8 +73,7 @@ public class UserController {
   
   @PostMapping(value="/sendCode.do", produces="application/json")
   public ResponseEntity<Map<String, Object>> sendCode(@RequestBody Map<String, Object> params) {
-    System.out.println(params);
-    return new ResponseEntity<>(HttpStatus.OK);
+    return userService.sendCode(params);
   }
   
   

@@ -20,7 +20,7 @@
 
 <style>
   @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap')
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
   * {
     font-family: "Noto Sans KR", sans-serif;
     font-weight: 400;
@@ -31,22 +31,22 @@
 <body>
 
   <h1>Sign Up</h1>
-  
+
   <form method="POST"
         action="${contextPath}/user/signup.do"
         id="frm-signup">
-  
+
     <div class="mb-3">
-      <label for="email">아이디</label>
-      <input type="text" id="email" name="email" placeholder="example@example.com">
+      <label for="inp-email">아이디</label>
+      <input type="text" id="inp-email" name="email" placeholder="example@example.com">
       <button type="button" id="btn-code" class="btn btn-primary">인증코드받기</button>
       <div id="msg-email"></div>
     </div>
     <div class="mb-3">
-      <input type="text" id="code" placeholder="인증코드입력" disabled>
+      <input type="text" id="inp-code" placeholder="인증코드입력" disabled>
       <button type="button" id="btn-verify-code" class="btn btn-primary">인증하기</button>
     </div>
-  
+
   </form>
 
 <script>
@@ -60,7 +60,7 @@ const fnGetContextPath = ()=>{
 }
 
 const fnCheckEmail = ()=>{
-  
+
 	/*
 	  new Promise((resolve, reject) => {
 		  $.ajax({
@@ -83,10 +83,10 @@ const fnCheckEmail = ()=>{
 		  })
 		})
 		.catch(() => {
-		  
+
 		})
 	*/
-	
+
 	/*
   	fetch('이메일중복체크요청', {})
     .then(response=>response.json())
@@ -100,22 +100,22 @@ const fnCheckEmail = ()=>{
       }
     })
 	*/
-	
-	let email = document.getElementById('email');
+
+	let inpEmail = document.getElementById('inp-email');
   let regEmail = /^[A-Za-z0-9-_]{2,}@[A-Za-z0-9]+(\.[A-Za-z]{2,6}){1,2}$/;
-  if(!regEmail.test(email.value)){
+  if(!regEmail.test(inpEmail.value)){
     alert('이메일 형식이 올바르지 않습니다.');
     return;
   }
-  
-  
+
+
   fetch(fnGetContextPath() + '/user/checkEmail.do', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      'email': email.value
+      'email': inpEmail.value
     })
   })
   .then(response => response.json())  // .then( (response) => { return response.json(); } )
@@ -127,9 +127,23 @@ const fnCheckEmail = ()=>{
 			    'Content-Type': 'application/json'
 			  },
 			  body: JSON.stringify({
-			    'email': email.value
+			    'email': inpEmail.value
 			  })
-		  });
+		  })
+		  .then(response => response.json())
+		  .then(resData => {  // resData = {"code": "123qaz"}
+			  let inpCode = document.getElementById('inp-code');
+		    let btnVerifyCode = document.getElementById('btn-verify-code');
+		    alert(inpEmail.value + '로 인증코드를 전송했습니다.');
+		    inpCode.disabled = false;
+		    btnVerifyCode.addEventListener('click', (evt) => {
+		    	if(resData.code === inpCode.value) {
+		    		alert('인증되었습니다.');
+		    	} else {
+		    		alert('인증되지 않았습니다.');
+		    	}
+		    })
+		  })
 	  } else {
 		  document.getElementById('msg-email').innerHTML = '이미 사용 중인 이메일입니다.';
 		  return;
@@ -152,6 +166,6 @@ document.getElementById('btn-code').addEventListener('click', fnCheckEmail);
 
 
 </script>
-  
+
 </body>
 </html>

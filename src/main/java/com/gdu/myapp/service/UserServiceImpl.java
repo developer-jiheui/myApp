@@ -12,40 +12,44 @@ import org.springframework.stereotype.Service;
 
 import com.gdu.myapp.dto.UserDto;
 import com.gdu.myapp.mapper.UserMapper;
+import com.gdu.myapp.utils.MyJavaMailUtils;
 import com.gdu.myapp.utils.MySecurityUtils;
 
 @Service
 public class UserServiceImpl implements UserService {
 
   private final UserMapper userMapper;
-  
-  public UserServiceImpl(UserMapper userMapper) {
+  private final MyJavaMailUtils myJavaMailUtils;
+
+  public UserServiceImpl(UserMapper userMapper, MyJavaMailUtils myJavaMailUtils) {
     super();
     this.userMapper = userMapper;
+    this.myJavaMailUtils = myJavaMailUtils;
   }
+
 
   @Override
   public void signin(HttpServletRequest request, HttpServletResponse response) {
-    
+
     try {
-      
+
       // 입력한 아이디
       String email = request.getParameter("email");
-      
+
       // 입력한 비밀번호 + SHA-256 방식의 암호화
       String pw = MySecurityUtils.getSha256(request.getParameter("pw"));
-      
+
       // 접속 IP (접속 기록을 남길 때 필요한 정보)
       String ip = request.getRemoteAddr();
-      
-      // DB로 보낼 정보 (email/pw: USER_T , email/ip: ACCESS_HISTORY_T) 
+
+      // DB로 보낼 정보 (email/pw: USER_T , email/ip: ACCESS_HISTORY_T)
       Map<String, Object> params = Map.of("email", email
                                         , "pw", pw
                                         , "ip", ip);
-      
+
       // email/pw 가 일치하는 회원 정보 가져오기
       UserDto user = userMapper.getUserByMap(params);
-      
+
       // 일치하는 회원 있음 (Sign In 성공)
       if(user != null) {
         // 접속 기록 ACCESS_HISTORY_T 에 남기기
@@ -54,7 +58,7 @@ public class UserServiceImpl implements UserService {
         request.getSession().setAttribute("user", user);
         // Sign In 후 페이지 이동
         response.sendRedirect(request.getParameter("url"));
-      
+
       // 일치하는 회원 없음 (Sign In 실패)
       } else {
         response.setContentType("text/html; charset=UTF-8");
@@ -66,11 +70,11 @@ public class UserServiceImpl implements UserService {
         out.flush();
         out.close();
       }
-      
+
     } catch (Exception e) {
       e.printStackTrace();
     }
-    
+
   }
 
   @Override
@@ -80,7 +84,24 @@ public class UserServiceImpl implements UserService {
     return new ResponseEntity<>(Map.of("enableEmail", enableEmail)
                               , HttpStatus.OK);
   }
-  
+
+  @Override
+  public ResponseEntity<Map<String, Object>> sendCode(Map<String, Object> params) {
+
+    // 인증코드 생성
+    String code = MySecurityUtils.getRandomString(6, true, true);
+
+    // 메일 보내기
+    myJavaMailUtils.sendMail((String)params.get("email")
+                           , "myapp 인증요청"
+                           , "<div>인증코드는 <strong>" + code + "</strong> 입니다.");
+
+    // 인증코드 입력화면으로 보내주는 값
+    return new ResponseEntity<>(Map.of("code", code)
+                              , HttpStatus.OK);
+
+  }
+
   @Override
   public void signout(HttpServletRequest request, HttpServletResponse response) {
     // TODO Auto-generated method stub
