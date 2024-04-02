@@ -55,7 +55,7 @@ public class UserController {
     model.addAttribute("url",  url);
 
     /********* 네이버 로그인 1 **********/
-    String redirectUri = "http://localhost:8080" + request.getContextPath() + "/user/naver/getAccessToken.do";
+    String redirectUri = "http://localhost:8888" + request.getContextPath() + "/user/naver/getAccessToken.do";
     //네이버 개발자 센터에 이렇게 적혀있음
     String state = new BigInteger(130,new SecureRandom()).toString();
 
@@ -63,8 +63,8 @@ public class UserController {
     StringBuilder builder = new StringBuilder();
     builder.append("https://nid.naver.com/oauth2.0/authorize");
     builder.append("?response_type=code");
-    builder.append("$client_id=h7HITARz4dvCYr6okwC7");
-    builder.append("$redirect_uri=" +redirectUri);
+    builder.append("&client_id=h7HITARz4dvCYr6okwC7");
+    builder.append("&redirect_uri=" +redirectUri);
     builder.append("&state=" + state);
 
     model.addAttribute("naverLoginUrl",builder.toString());
