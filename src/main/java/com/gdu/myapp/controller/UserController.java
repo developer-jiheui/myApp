@@ -1,5 +1,7 @@
 package com.gdu.myapp.controller;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,7 +53,22 @@ public class UserController {
     
     // Sign In 페이지로 url 넘겨 주기
     model.addAttribute("url",  url);
-    
+
+    /********* 네이버 로그인 1 **********/
+    String redirectUri = "http://localhost:8080" + request.getContextPath() + "/user/naver/getAccessToken.do";
+    //네이버 개발자 센터에 이렇게 적혀있음
+    String state = new BigInteger(130,new SecureRandom()).toString();
+
+
+    StringBuilder builder = new StringBuilder();
+    builder.append("https://nid.naver.com/oauth2.0/authorize");
+    builder.append("?response_type=code");
+    builder.append("$client_id=h7HITARz4dvCYr6okwC7");
+    builder.append("$redirect_uri=" +redirectUri);
+    builder.append("&state=" + state);
+
+    model.addAttribute("naverLoginUrl",builder.toString());
+
     return "user/signin";
     
   }
@@ -76,8 +93,23 @@ public class UserController {
     return userService.sendCode(params);
   }
   
+  @PostMapping("/signup.do")
+  public void signUp(HttpServletRequest request, HttpServletResponse response){
+    userService.signup(request, response);
+  }
   
-  
-  
+   @GetMapping("/leave.do")
+  public void leave(HttpServletRequest request, HttpServletResponse response) {
+    userService.leave(request, response);
+  }
+  /*
+  @GetMapping("/leave.do")
+  public void leave(HttpSession session, HttpServletResponse response) {
+    UserDto user = (UserDto) session.getAttribute("user");
+  }
+  @GetMapping("/leave.do")
+  public void leave(@SessionAttribute(name="user") UserDto user, HttpServletResponse response) {
+  }
+  */
   
 }

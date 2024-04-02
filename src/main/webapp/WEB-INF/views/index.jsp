@@ -6,6 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Insert title here</title>
 
 <!-- include libraries(jquery, bootstrap) -->
@@ -20,7 +21,7 @@
 
 <style>
   @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap')
   * {
     font-family: "Noto Sans KR", sans-serif;
     font-weight: 400;
@@ -39,6 +40,7 @@
   <!-- Sign In 된 경우 -->
   <c:if test="${sessionScope.user != null}">
     ${sessionScope.user.name}님 반갑습니다
+    <a href="${contextPath}/user/leave.do">회원탈퇴</a>
   </c:if>
 
 </body>
