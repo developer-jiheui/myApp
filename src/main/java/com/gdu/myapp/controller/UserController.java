@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.gdu.myapp.dto.UserDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,7 +58,7 @@ public class UserController {
     /********* 네이버 로그인 1 **********/
     String redirectUri = "http://localhost:8888" + request.getContextPath() + "/user/naver/getAccessToken.do";
     //네이버 개발자 센터에 이렇게 적혀있음
-    String state = new BigInteger(130,new SecureRandom()).toString();
+    String state = new BigInteger(130,new SecureRandom()).toString();//위조 방지
 
 
     StringBuilder builder = new StringBuilder();
@@ -68,6 +69,8 @@ public class UserController {
     builder.append("&state=" + state);
 
     model.addAttribute("naverLoginUrl",builder.toString());
+
+
 
     return "user/signin";
     
@@ -97,7 +100,38 @@ public class UserController {
   public void signUp(HttpServletRequest request, HttpServletResponse response){
     userService.signup(request, response);
   }
-  
+
+  @GetMapping("/naver/getAccessToken.do")
+  public String getAccessToken(HttpServletRequest request){
+    String accessToken = userService.getNaverLoginAccessToken(request);
+    return "redirect:/user/naver/getProfile.do?accessToken=" + accessToken;
+  }
+
+  @GetMapping("/naver/getProfile.do")
+  public String getProfile(HttpServletRequest request, HttpServletResponse response, Model model){
+    UserDto naverUser = userService.getNaverLoginProfile(request.getParameter("accessToken"));
+    String path = null;
+
+
+    // 프로필이 DB에 있는지 확인 (있으면 Sign in, 없으면 sign out)
+    if(userService.hasUser(naverUser)){
+      //Sign in
+      userService.naverSignin(request,response,naverUser);
+
+      path= "redirect:/main.page";
+
+    }else{
+      path="r";
+
+    }
+
+    return path;
+  }
+    @GetMapping("/signout.do")
+  public void signout(HttpServletRequest request, HttpServletResponse response) {
+    userService.signout(request, response);
+  }
+
    @GetMapping("/leave.do")
   public void leave(HttpServletRequest request, HttpServletResponse response) {
     userService.leave(request, response);

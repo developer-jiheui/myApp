@@ -5,6 +5,7 @@
 
 <mapper namespace="com.gdu.myapp.mapper.UserMapper">
 
+
     <select id="getUserByMap"
             parameterType="Map"
             resultType="UserDto">
@@ -76,4 +77,11 @@
             <if test="userNo!=0">USER_NO = #{user_no}</if>
         </where>
     </delete>
+
+      <update id="updateAccessHistory">
+    UPDATE ACCESS_HISTORY_T
+       SET SIGNOUT_DT = CURRENT_DATE
+     WHERE SESSION_ID = #{sessionId}
+  </update>
+
 </mapper>

@@ -64,6 +64,36 @@ public class MyPageUtils {
     return builder.toString();
     
   }
+
+    public String getPaging(String requestURI, String sort, int display, String s) {
+
+        StringBuilder builder = new StringBuilder();
+
+     // <
+    if(beginPage == 1) {
+      builder.append("<div class=\"dont-click\">&lt;</div>");
+    } else {
+      builder.append("<div><a href=\"" + requestURI + "?page=" + (beginPage - 1) + "&sort=" + sort + "&display=" + display+"&"+s+  "\">&lt;</a></div>");
+    }
+
+    // 1 2 3 4 5 6 7 8 9 10
+    for(int p = beginPage; p <= endPage; p++) {
+      if(p == page) {
+        builder.append("<div><a class=\"current-page\" href=\"" + requestURI + "?page=" + p + "&sort=" + sort + "&display=" + display +"&"+s+ "\">" + p + "</a></div>");
+      } else {
+        builder.append("<div><a href=\"" + requestURI + "?page=" + p + "&sort=" + sort + "&display=" + display +"&"+s+ "\">" + p + "</a></div>");
+      }
+    }
+
+    // >
+    if(endPage == totalPage) {
+      builder.append("<div class=\"dont-click\">&gt;</div>");
+    } else {
+      builder.append("<div><a href=\"" + requestURI + "?page=" + (endPage + 1) + "&sort=" + sort + "&display=" + display +"&"+s+ "\">&gt;</a></div>");
+    }
+
+    return builder.toString();
+    }
   
   public String getAsyncPaging() {
    

@@ -1,0 +1,19 @@
+---작성자의 EMAIL 에 'user'가 포함되는 게시글이 몇개인가?
+
+SELECT COUNT(BBS_NO) FROM BBS_T
+INNER JOIN GD.USER_T UT on UT.USER_NO = BBS_T.USER_NO
+WHERE UT.EMAIL LIKE '%user%';
+
+--내용에 '마라탕'이 포함되는 게시글이 몇 개인가?
+SELECT COUNT(*)
+FROM USER_T U INNER JOIN GD.BBS_T BT on U.USER_NO = BT.USER_NO
+WHERE BT.CONTENTS LIKE '%마라탕%';
+
+
+--Map.of("column", "U.EMAIL", "query", "user")
+
+SELECT COUNT(*)
+FROM USER_T U INNER JOIN GD.BBS_T BT on U.USER_NO = BT.USER_NO
+WHERE ${column} LIKE '%' || #{query} || '%';
+WHERE ${column} LIKE CONCAT(CONCAT('%', #{query}), '%')
+WHERE U.EMAIL LIKE '%#{user}%'
