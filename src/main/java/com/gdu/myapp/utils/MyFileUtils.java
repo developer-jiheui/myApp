@@ -14,7 +14,7 @@ public class MyFileUtils {
   
   // 업로드 경로 반환
   public String getUploadPath() {
-    return "Users/ialee/upload" + DateTimeFormatter.ofPattern("/yyyy/MM/dd").format(TODAY);
+    return "/usr/local/Cellar/tomcat@9/upload" + DateTimeFormatter.ofPattern("/yyyy/MM/dd").format(TODAY);
   }
   
   // 저장될 파일명 반환

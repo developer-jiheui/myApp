@@ -2,9 +2,16 @@ package com.gdu.myapp.controller;
 
 import com.gdu.myapp.service.BlogService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import java.util.Map;
 
 @RequestMapping("/blog")
 @RequiredArgsConstructor
@@ -24,4 +31,8 @@ public class BlogController {
         return "blog/write";
     }
 
+  @PostMapping(value="/summernote/imageUpload.do", produces="application/json")
+  public ResponseEntity<Map<String, Object>> summernoteImageUpload(@RequestParam MultipartFile multipartFile) {
+    return blogService.summernoteImageUpload(multipartFile);
+  }
 }
