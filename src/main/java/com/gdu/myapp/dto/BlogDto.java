@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Data
 @Builder
-public class BlogDto {
+public class  BlogDto {
     private int blogNo , hit;
     private String title, contents;
     private Timestamp createDt, modifyDt;
