@@ -12,7 +12,7 @@
 <form id="frm-upload-register"
       method="POST"
       enctype="multipart/form-data"
-      action="${contextPath}/upload/register.do">
+      action="${contextPath}/uplo`ad/register.do">
 
   <div>
     <span>작성자</span>
